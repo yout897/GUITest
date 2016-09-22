@@ -35,7 +35,7 @@ public class Entity {
     public void move(int x, int y){
         x += x;
         y += y;
-        //test
+        //test 2
     }
     public Rectangle getBound(){
         return new Rectangle(x,y,size,size);
