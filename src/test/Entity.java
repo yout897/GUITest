@@ -11,10 +11,11 @@ import java.awt.Rectangle;
 
 public class Entity {
     
-    private int x,y,size;
+    private int x,y,size,size2;
     
-    public Entity(int size){
+    public Entity(int size,int size2){
         this.size = size;
+        this.size2 = size2;
     }
     public int getX(){
         return x;
@@ -38,13 +39,13 @@ public class Entity {
         //test 2
     }
     public Rectangle getBound(){
-        return new Rectangle(x,y,size,size);
+        return new Rectangle(x,y,size,size2);
     }
     public boolean colliding(Entity e){
         if(e == this)return false;
         return getBound().intersects(e.getBound());
     }
     public void render(Graphics2D g2d){
-        g2d.fillRect(x + 1, y + 1, size - 2, size - 2);
+        g2d.fillRect(x + 1, y + 1, size - 2, size2 - 2);
     }
 }
