@@ -23,22 +23,22 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
     private boolean running;
     private Thread thread;
     private long targetT;
-    //Rendring
+    //Rendering
     private Graphics2D g2d;
     private BufferedImage image;
-    private JButton button = new JButton("test");
     //Entities
     private int SIZE = 20;
     private Entity pl;
-    private Entity tree1;
-    private Entity tree2;
-    private Entity slot;
+    private Entity tree1,tree2;
+    private Entity slot,slot2,slot3;
+    private Entity topWall,botWall,leftWall,rightWall;
     private ArrayList<Entity> trees = new ArrayList<Entity>();
     private ArrayList<Entity> inventories = new ArrayList<Entity>();
+    private ArrayList<Entity> walls = new ArrayList<Entity>();
     //Variables
     public static final int WIDTH = 1000;
-    public static final int HEIGHT = 720;
-    private int dx,dy,h = 0;
+    public static final int HEIGHT = 600;
+    private int dx,dy,h = 0,treeNum = 5;
     private String wood = "wood";
     private ArrayList inventory = new ArrayList();
     private boolean up,down,left,right,t = false,harvest,inv = false;
@@ -48,8 +48,6 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
         setFocusable(true);
         requestFocus();
         addKeyListener(this);
-        
-        add(button);
     }
 
     @Override
@@ -120,20 +118,27 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
         
         running = true;
         
-        pl = new Entity(SIZE);
-        tree1 =  new Entity(SIZE);
-        tree2 = new Entity(SIZE);
-        slot = new Entity(SIZE + 10);
+        pl = new Entity(SIZE,SIZE);
+        tree1 =  new Entity(SIZE,SIZE);tree2 = new Entity(SIZE,SIZE);
+        topWall = new Entity(WIDTH, 5);topWall.setPos(0, 0);
+        botWall = new Entity(WIDTH,5);botWall.setPos(HEIGHT, 0);
+        leftWall = new Entity(5,HEIGHT);leftWall.setPos(0, 0);
+        rightWall = new Entity(5,HEIGHT);rightWall.setPos(WIDTH,0);
+        slot = new Entity(SIZE + 10,SIZE + 10);slot2 = new Entity(SIZE + 10,SIZE + 10);slot3 = new Entity(SIZE + 10,SIZE + 10);
         
         trees.add(tree1);
         trees.add(tree2);
         
-        int rand1 = (int)(Math.random()*900);
-        int rand2 = (int)(Math.random()*600);
-        tree1.setPos(rand1, rand2);
-        rand1 = (int)(Math.random()*900);
-        rand2 = (int)(Math.random()*600);
-        tree2.setPos(rand1,rand2);
+        inventories.add(slot);
+        inventories.add(slot2);
+        inventories.add(slot3);
+        
+        walls.add(topWall);walls.add(botWall);walls.add(leftWall);walls.add(rightWall);
+        for(int j = 0; j < trees.size(); j++){
+            int rand1 = (int)(Math.random()*WIDTH);
+            int rand2 = (int)(Math.random()*HEIGHT);
+            trees.get(j).setPos(rand1, rand2);
+        }   
     }
     //Draws the background and places anything that needs to be rendered ontop
     private void requestRender() {
@@ -158,10 +163,10 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
             dx += 1 * 1.0025;
         }
         
-        if(dx > 900){
+        if(dx > WIDTH-10){
             dx -= 10;
         }
-        if(dy > 700){
+        if(dy > HEIGHT-10){
             dy -= 10; 
         }
         
@@ -175,7 +180,7 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
         }
         if(harvest && t){
             trees.remove(h);
-            Collections.addAll(inventory,wood,wood,wood);
+            inventory.add(wood);
             t = false;
         }
     }
@@ -193,19 +198,33 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
             g2d.drawString("Press \"F\" to harvest", 40, 40);
         }
         if(inv){
-            g2d.setColor(Color.lightGray);
+            
             for(int x = 0; x < 5;x++){
                 for(int y = 0; y < 5;y++){
-                    inventories.add(slot);
-                    inventories.add(slot);
-                    inventories.add(slot);
                     for(Entity e : inventories){
-                        e.setPos(x+10, y-10);
-                        e.render(g2d);
+                        if(inventory.contains(wood)){
+                            for(int k = 0;k<inventory.size();k++){
+                                if(inventory.get(k) == wood){
+                                    g2d.setColor(Color.ORANGE); 
+                                    e.setPos(x+10+x*30, y+10);
+                                    e.render(g2d);
+                                }
+                            }
+                        }else{
+                            g2d.setColor(Color.lightGray);
+                            e.setPos(x+10+x*30, y+10);
+                            e.render(g2d);
+                        }
                     }
                 }
             }
         }
+        
+        g2d.setColor(Color.WHITE);
+        for(Entity e : walls){
+            e.render(g2d);
+        }
+        
         g2d.setColor(Color.ORANGE);
         for(Entity e : trees){
             e.render(g2d);
