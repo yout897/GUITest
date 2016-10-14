@@ -13,8 +13,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collections;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
@@ -27,20 +25,20 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
     private Graphics2D g2d;
     private BufferedImage image;
     //Entities
-    private int SIZE = 20;
+    private final int SIZE = 20;
     private Entity pl;
     private Entity tree1,tree2;
     private Entity slot,slot2,slot3;
     private Entity topWall,botWall,leftWall,rightWall;
-    private ArrayList<Entity> trees = new ArrayList<Entity>();
-    private ArrayList<Entity> inventories = new ArrayList<Entity>();
-    private ArrayList<Entity> walls = new ArrayList<Entity>();
+    private final ArrayList<Entity> trees = new ArrayList<>();
+    private final ArrayList<Entity> inventories = new ArrayList<>();
+    private final ArrayList<Entity> walls = new ArrayList<>();
     //Variables
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 600;
     private int dx,dy,h = 0,treeNum = 5;
-    private String wood = "wood";
-    private ArrayList inventory = new ArrayList();
+    private final String wood = "wood";
+    private final ArrayList inventory = new ArrayList();
     private boolean up,down,left,right,t = false,harvest,inv = false;
     
     public GamePanel() {
@@ -70,7 +68,7 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
         if(k == KeyEvent.VK_S){down = true;}
         if(k == KeyEvent.VK_A){left = true;}
         if(k == KeyEvent.VK_D){right = true;}
-        if(k == KeyEvent.VK_F){harvest = true;};
+        if(k == KeyEvent.VK_F){harvest = true;}
         if(k == KeyEvent.VK_E){inv = true;}
     }
 
@@ -82,7 +80,7 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
         if(k == KeyEvent.VK_S){down = false;}
         if(k == KeyEvent.VK_A){left = false;}
         if(k == KeyEvent.VK_D){right = false;}
-        if(k == KeyEvent.VK_F){harvest = false;};
+        if(k == KeyEvent.VK_F){harvest = false;}
         if(k == KeyEvent.VK_E){inv = false;}
     }
     
@@ -134,11 +132,11 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
         inventories.add(slot3);
         
         walls.add(topWall);walls.add(botWall);walls.add(leftWall);walls.add(rightWall);
-        for(int j = 0; j < trees.size(); j++){
+        trees.stream().forEach((tree) -> {
             int rand1 = (int)(Math.random()*WIDTH);
             int rand2 = (int)(Math.random()*HEIGHT);
-            trees.get(j).setPos(rand1, rand2);
-        }   
+            tree.setPos(rand1, rand2);
+        });   
     }
     //Draws the background and places anything that needs to be rendered ontop
     private void requestRender() {
@@ -203,8 +201,8 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
                 for(int y = 0; y < 5;y++){
                     for(Entity e : inventories){
                         if(inventory.contains(wood)){
-                            for(int k = 0;k<inventory.size();k++){
-                                if(inventory.get(k) == wood){
+                            for (Object inventory1 : inventory) {
+                                if (inventory1 == wood) {
                                     g2d.setColor(Color.ORANGE); 
                                     e.setPos(x+10+x*30, y+10);
                                     e.render(g2d);
@@ -221,13 +219,13 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
         }
         
         g2d.setColor(Color.WHITE);
-        for(Entity e : walls){
+        walls.stream().forEach((e) -> {
             e.render(g2d);
-        }
+        });
         
         g2d.setColor(Color.ORANGE);
-        for(Entity e : trees){
+        trees.stream().forEach((e) -> {
             e.render(g2d);
-        }
+        });
     }
 }
