@@ -37,8 +37,8 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 600;
     private int dx,dy,h = 0,treeNum = 5;
-    private final String wood = "wood";
-    private final ArrayList inventory = new ArrayList();
+    public String wood = "wood";
+    private final ArrayList<String> inventory = new ArrayList<String>();
     private boolean up,down,left,right,t = false,harvest,inv = false;
     
     public GamePanel() {
@@ -200,19 +200,14 @@ public class GamePanel extends JPanel implements Runnable,KeyListener{
             for(int x = 0; x < 5;x++){
                 for(int y = 0; y < 5;y++){
                     for(Entity e : inventories){
-                        if(inventory.contains(wood)){
-                            for (Object inventory1 : inventory) {
-                                if (inventory1 == wood) {
-                                    g2d.setColor(Color.ORANGE); 
-                                    e.setPos(x+10+x*30, y+10);
-                                    e.render(g2d);
-                                }
-                            }
-                        }else{
-                            g2d.setColor(Color.lightGray);
-                            e.setPos(x+10+x*30, y+10);
-                            e.render(g2d);
+                        for ( String wood : inventory) {
+                                g2d.setColor(Color.ORANGE); 
+                                e.setPos(x+10+x*30, y+10);
+                                e.render(g2d);
                         }
+                        g2d.setColor(Color.lightGray);
+                        e.setPos(x+10+x*30, y+10);
+                        e.render(g2d);
                     }
                 }
             }
