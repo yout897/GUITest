@@ -246,7 +246,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 for (int x = 0; x < 5; x++) {
                     for (int y = 0; y < 5; y++) {
                         for (Entity e : inventories) {
-                            if (null != inventory.get(x)) switch (inventory.get(x)) {
+                            if (null != inventory.get(x)) 
+                               switch (inventory.get(x)) {
                                 case "i":
                                     g2d.setColor(Color.lightGray);
                                     e.setPos(x + 10 + x * 30, y + 10);
