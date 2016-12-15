@@ -43,7 +43,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private int dx, dy, h = 0, treeNum = 5,num = 0;
     public String wood = "wood";
     private final ArrayList<String> inventory = new ArrayList<>();
-    private boolean up, down, left, right, t = false, harvest, inv = false,craft = false;
+    private boolean up, down, left, right, t = false, harvest, inv = false,craft = false,one;
 
     public GamePanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -91,6 +91,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         if (k == KeyEvent.VK_C) {
             craft = !craft;
         }
+        if(k == KeyEvent.VK_1){
+            one = true;
+        }
     }
 
     @Override
@@ -114,6 +117,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         }
         if (k == KeyEvent.VK_E) {
             inv = false;
+        }
+        if(k == KeyEvent.VK_1){
+            one = false;
         }
     }
 
@@ -246,18 +252,25 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 for (int x = 0; x < 5; x++) {
                     for (int y = 0; y < 5; y++) {
                         for (Entity e : inventories) {
-                            if (null != inventory.get(x)) 
-                               switch (inventory.get(x)) {
-                                case "i":
-                                    g2d.setColor(Color.lightGray);
-                                    e.setPos(x + 10 + x * 30, y + 10);
-                                    e.render(g2d);
-                                    break;
-                                case "wood":
-                                    g2d.setColor(Color.ORANGE);
-                                    e.setPos(x + 10 + x * 30, y + 10);
-                                    e.render(g2d);
-                                    break;
+                            for(){
+                                if (null != inventory.get(i)) 
+                                   switch (inventory.get(i)) {
+                                    case "i":
+                                        g2d.setColor(Color.lightGray);
+                                        e.setPos(x + 10 + x * 30, y + 10);
+                                        e.render(g2d);
+                                        break;
+                                    case "wood":
+                                        g2d.setColor(new Color(75,45,7));
+                                        e.setPos(x + 10 + x * 30, y + 10);
+                                        e.render(g2d);
+                                        break;
+                                    case "stick":
+                                        g2d.setColor(new Color(133,85,31));
+                                        e.setPos(x + 10 + x * 30, y + 10);
+                                        e.render(g2d);
+                                        break;
+                                }
                             }
                         }
                     }
@@ -277,8 +290,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             if(craft){
                 g2d.setColor(Color.WHITE);
                 g2d.fillRect(750, 50, 240, 500);
-                button1.setLocation(755, 60);
-                button1.setVisible(craft);
+                g2d.drawString("Press \"1\" to craft a stick",760,60);
+                if(one){
+                    if(inventory.contains("wood")){
+                        int check;
+                        check = inventory.indexOf("wood");
+                        inventory.set(check, "i");
+                        inventory.add("stick");
+                    }else{
+                        g2d.drawString("You don't have any wood",760,400);
+                    }
+                }
             }
         }
     }
