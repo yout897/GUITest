@@ -14,6 +14,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
@@ -35,19 +36,21 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private final ArrayList<Entity> trees = new ArrayList<>();
     private final ArrayList<Entity> inventories = new ArrayList<>();
     private final ArrayList<Entity> walls = new ArrayList<>();
+    JButton button1 = new JButton("Hi");
     //Variables
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 600;
-    private int dx, dy, h = 0, treeNum = 5;
+    private int dx, dy, h = 0, treeNum = 5,num = 0;
     public String wood = "wood";
     private final ArrayList<String> inventory = new ArrayList<>();
-    private boolean up, down, left, right, t = false, harvest, inv = false;
+    private boolean up, down, left, right, t = false, harvest, inv = false,craft = false;
 
     public GamePanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setFocusable(true);
         requestFocus();
         addKeyListener(this);
+        add(button1);
     }
 
     @Override
@@ -60,7 +63,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     //Do I even have to say what this does
     @Override
     public void keyTyped(KeyEvent e) {
-
+        int k = e.getKeyCode();
     }
 
     @Override
@@ -84,6 +87,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         }
         if (k == KeyEvent.VK_E) {
             inv = true;
+        }
+        if (k == KeyEvent.VK_C) {
+            craft = !craft;
         }
     }
 
@@ -220,40 +226,43 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         }
         if (harvest && t) {
             trees.remove(h);
-            inventory.add(wood);
+            inventory.set(num,wood);
+            num++;
             t = false;
         }
     }
 
     //Rendering graphics
     public void render(Graphics2D g2d) {
-        g2d.clearRect(0, 0, WIDTH, HEIGHT);
-        g2d.setColor(Color.BLUE);
-        pl.render(g2d);
+            g2d.clearRect(0, 0, WIDTH, HEIGHT);
+            g2d.setColor(Color.BLUE);
+            pl.render(g2d);
 
-        if (t) {
-            g2d.setColor(Color.WHITE);
-            g2d.drawString("Press \"F\" to harvest", 40, 40);
-        }
-        if (inv) {
-            for (int x = 0; x < 5; x++) {
-                for (int y = 0; y < 5; y++) {
-                    for (Entity e : inventories) {
-                        for (String s : inventory) {
-                            if (s.contains("i")) {
-                                g2d.setColor(Color.lightGray);
-                                e.setPos(x + 10 + x * 30, y + 10);
-                                e.render(g2d);
-                            } else if (s.contains("wood")) {
-                                g2d.setColor(Color.ORANGE);
-                                e.setPos(x + 10 + x * 30, y + 10);
-                                e.render(g2d);
+            if (t) {
+                g2d.setColor(Color.WHITE);
+                g2d.drawString("Press \"F\" to harvest", 40, 40);
+            }
+            if (inv) {
+                for (int x = 0; x < 5; x++) {
+                    for (int y = 0; y < 5; y++) {
+                        for (Entity e : inventories) {
+                            if (null != inventory.get(x)) switch (inventory.get(x)) {
+                                case "i":
+                                    g2d.setColor(Color.lightGray);
+                                    e.setPos(x + 10 + x * 30, y + 10);
+                                    e.render(g2d);
+                                    break;
+                                case "wood":
+                                    g2d.setColor(Color.ORANGE);
+                                    e.setPos(x + 10 + x * 30, y + 10);
+                                    e.render(g2d);
+                                    break;
                             }
                         }
                     }
                 }
             }
-        }
+            
             g2d.setColor(Color.WHITE);
             walls.stream().forEach((e) -> {
                 e.render(g2d);
@@ -263,5 +272,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             trees.stream().forEach((e) -> {
                 e.render(g2d);
             });
+            
+            if(craft){
+                g2d.setColor(Color.WHITE);
+                g2d.fillRect(750, 50, 240, 500);
+                button1.setLocation(755, 60);
+                button1.setVisible(craft);
+            }
         }
     }
