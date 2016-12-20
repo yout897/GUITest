@@ -9,16 +9,24 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class GamePanel extends JPanel implements Runnable, KeyListener {
+public class GamePanel extends JPanel implements Runnable, KeyListener,MouseListener {
 
     //Game Loop
     private boolean running;
@@ -26,11 +34,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private long targetT;
     //Rendering
     private Graphics2D g2d;
+    private File file = new File("\\\\JFRCVIFS.Student.UGDSB.ED\\Home\\Students\\AlDiC2547\\Documents\\stick.png");
     private BufferedImage image;
+    private Image test;
     //Entities
     private final int SIZE = 20;
     private Entity pl;
-    private Entity tree1, tree2;
+    private Entity tree1, tree2,button2;
     private Entity slot, slot2, slot3;
     private Entity topWall, botWall, leftWall, rightWall;
     private final ArrayList<Entity> trees = new ArrayList<>();
@@ -153,9 +163,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     public void initialize() {
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         g2d = image.createGraphics();
-
         running = true;
 
+        try {
+            test = ImageIO.read(file);
+        } catch (IOException ex) {
+            Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         Collections.addAll(inventory, "i", "i", "i", "i", "i");
 
         pl = new Entity(SIZE, SIZE);
@@ -173,6 +188,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         slot2 = new Entity(SIZE + 10, SIZE + 10);
         slot3 = new Entity(SIZE + 10, SIZE + 10);
 
+        button2 = new Entity(SIZE,SIZE);
+        button2.setPos(760, 300);
+        
         trees.add(tree1);
         trees.add(tree2);
 
@@ -243,7 +261,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             g2d.clearRect(0, 0, WIDTH, HEIGHT);
             g2d.setColor(Color.BLUE);
             pl.render(g2d);
-
+            
+            g2d.drawImage(test, 0, 0,null);
             if (t) {
                 g2d.setColor(Color.WHITE);
                 g2d.drawString("Press \"F\" to harvest", 40, 40);
@@ -292,6 +311,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 g2d.setColor(Color.WHITE);
                 g2d.fillRect(750, 50, 240, 500);
                 g2d.drawString("Press \"1\" to craft a stick",760,60);
+                g2d.setColor(Color.red);
+                button2.render(g2d);
+                g2d.setColor(Color.WHITE);
                 if(one){
                     if(inventory.contains("wood")){
                         int check;
@@ -299,9 +321,40 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                         inventory.set(check, "i");
                         inventory.add("stick");
                     }else{
+                        g2d.setColor(Color.red);
                         g2d.drawString("You don't have any wood",760,400);
+                        
                     }
                 }
             }
         }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if((e.getButton() == 1) && e.getX() == button2.getX() && e.getY() == button2.getY()){
+            System.out.println("HHHHHH");
+        }
     }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+}
